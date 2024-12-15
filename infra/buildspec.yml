@@ -15,7 +15,7 @@ phases:
       - echo "Building my-lambda..."
       - cd ../lambdas/my-lambda && npx tsc
       - echo "Synthesizing CDK..."
-      - cd ../infra && npx cdk synth
+      - cd ../../infra && npx cdk synth
 artifacts:
   files:
     - '**/*'
