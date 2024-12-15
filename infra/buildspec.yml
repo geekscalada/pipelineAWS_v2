@@ -1,13 +1,13 @@
-version: "0.2"
+version: '0.2'
 
 phases:
   install:
     runtime-versions:
-      nodejs: "18"
+      nodejs: '18'
     commands:
       - echo "Installing dependencies..."
-      - cd infra && npm install
-      - cd ../lambdas/my-lambda && npm install
+      - npm install
+      - cd lambdas/my-lambda && npm install
   build:
     commands:
       - echo "Building infrastructure..."
@@ -18,5 +18,5 @@ phases:
       - cd ../infra && npx cdk synth
 artifacts:
   files:
-    - "**/*"
+    - '**/*'
   base-directory: infra/dist
