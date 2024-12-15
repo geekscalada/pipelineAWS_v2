@@ -24,6 +24,7 @@ export class PipelineStack extends cdk.Stack {
       repo: 'pipelineAWS_v2', // Repositorio
       branch: 'preproduction', // Rama a escuchar
       output: sourceOutput,
+      triggerOnPush: true, // Activar la acción en cada push (por si se queda colgada)
     });
 
     // 2. Build: Compilación y despliegue con CDK

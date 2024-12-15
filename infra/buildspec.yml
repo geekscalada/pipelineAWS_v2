@@ -11,11 +11,11 @@ phases:
   build:
     commands:
       - echo "Building infrastructure..."
-      - cd ../../infra && npm run build
+      - cd ../../infra && npx tsc
       - echo "Building my-lambda..."
       - cd ../lambdas/my-lambda && npx tsc
       - echo "Synthesizing CDK..."
-      - cd ../../infra && npx cdk synth
+      - cd ../infra && npx cdk synth
 artifacts:
   files:
     - '**/*'
