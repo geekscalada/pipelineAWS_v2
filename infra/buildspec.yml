@@ -9,7 +9,7 @@ phases:
       - npm install -g npm@latest
       - echo "Installing dependencies..."
       - cd infra && npm install --include=dev
-      - npm install typescript --save-dev
+      - npm install -g typescript
       - echo "Verifying TypeScript installation..."
       - npm list typescript
       - pwd
