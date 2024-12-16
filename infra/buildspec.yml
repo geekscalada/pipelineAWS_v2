@@ -5,6 +5,8 @@ phases:
     runtime-versions:
       nodejs: '18'
     commands:
+      - echo "Updating npm to the latest version..."
+      - npm install -g npm@latest
       - echo "Installing dependencies..."
       - cd infra && npm install --include=dev
       - echo "Verifying TypeScript installation..."
