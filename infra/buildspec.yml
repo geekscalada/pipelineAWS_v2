@@ -6,15 +6,15 @@ phases:
       nodejs: '18'
     commands:
       - echo "Installing dependencies..."
-      - cd infra && npm install
+      - cd infra && npm install --include=dev
       - echo "Verifying TypeScript installation..."
       - npm list typescript
       - pwd
-      - cd ../lambdas/my-lambda && npm install
+      - cd ../lambdas/my-lambda && npm install --include=dev
   build:
     commands:
       - echo "Building infrastructure..."
-      - cd ../../infra && npm run build
+      - cd ../../infra && npx tsc
       - ls -lah
       - echo "Building my-lambda..."
       - cd ../lambdas/my-lambda && npx tsc
