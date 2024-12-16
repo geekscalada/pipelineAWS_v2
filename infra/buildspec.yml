@@ -11,7 +11,7 @@ phases:
       - cd infra && npm install --include=dev
       - npm install -g typescript
       - echo "Verifying TypeScript installation..."
-      - npm list typescript
+      - tsc --version
       - pwd
       - cd ../lambdas/my-lambda && npm install --include=dev
   build:
