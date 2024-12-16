@@ -8,7 +8,7 @@ phases:
       - echo "Installing dependencies..."
       - cd infra && npm install
       - echo "Verifying TypeScript installation..."
-      - cd infra && npm list typescript
+      - npm list typescript
       - pwd
       - cd ../lambdas/my-lambda && npm install
   build:
