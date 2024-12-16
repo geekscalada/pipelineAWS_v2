@@ -7,11 +7,15 @@ phases:
     commands:
       - echo "Installing dependencies..."
       - cd infra && npm install
+      - echo "Verifying TypeScript installation..."
+      - cd infra && npm list typescript
+      - pwd
       - cd ../lambdas/my-lambda && npm install
   build:
     commands:
       - echo "Building infrastructure..."
-      - cd ../../infra && npx tsc
+      - cd ../../infra && npm run build
+      - ls -lah
       - echo "Building my-lambda..."
       - cd ../lambdas/my-lambda && npx tsc
       - echo "Synthesizing CDK..."
