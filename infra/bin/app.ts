@@ -19,17 +19,10 @@ new PipelineStack(app, 'PipelineStack', {
 });
 
 // References to the class LambdaStack
-//TODO: estos process.env a qué referencian?
+
 new LambdaStack(app, 'LambdaStack', {
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
     region: process.env.CDK_DEFAULT_REGION,
   },
 });
-
-// new SecretsManagerStack(app, 'SecretsManagerStack', {
-//   env: {
-//     account: process.env.CDK_DEFAULT_ACCOUNT,
-//     region: process.env.CDK_DEFAULT_REGION,
-//   },
-// });
