@@ -25,7 +25,7 @@ phases:
       - ls -lah
       - echo "Synthesizing CDK..."
       - cd ../../infra && npx cdk synth
-      - npx cdk deploy --require-approval never
+      - npx cdk deploy --all --require-approval never
 artifacts:
   files:
     - '**/*'
