@@ -2,7 +2,6 @@
 import * as cdk from 'aws-cdk-lib';
 import { PipelineStack } from '../lib/pipeline-stack.js';
 import { LambdaStack } from '../lib/lambda-stack.js';
-import { SecretsManagerStack } from '../lib/secretsManager-stack.js';
 
 /**
  * This is the entry point of the CDK application.

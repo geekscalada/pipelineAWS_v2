@@ -10,13 +10,13 @@ export class PipelineStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // Crear la conexión con GitHub en CodeStar Connections
+    // Create the connection
     const codestarConnection = new codestarconnections.CfnConnection(this, 'GitHubConnection', {
       connectionName: 'GitHubConnection', // Nombre descriptivo
       providerType: 'GitHub', // Tipo de proveedor (puede ser GitHub o GitHub Enterprise Server)
     });
 
-    // 1. Fuente: Conexión con GitHub usando la conexión creada
+    // 1. Source: GitHUBConnection
     const sourceOutput = new codepipeline.Artifact();
     const sourceAction = new codepipeline_actions.CodeStarConnectionsSourceAction({
       actionName: 'GitHub_Source',
@@ -28,8 +28,7 @@ export class PipelineStack extends cdk.Stack {
       triggerOnPush: true, // Activar la acción en cada push (por si se queda colgada)
     });
 
-    // 2. Build: Compilación y despliegue con CDK
-    // Proyecto de CodeBuild con referencia al buildspec.yml
+    // 2. Build: Compile and  y deploy with CDK using buildspec
     const buildProject = new codebuild.PipelineProject(this, 'LambdaBuildProject', {
       buildSpec: codebuild.BuildSpec.fromSourceFilename('infra/buildspec.yml'), // Ruta al buildspec
       environment: {
@@ -47,7 +46,7 @@ export class PipelineStack extends cdk.Stack {
 
     const buildOutput = new codepipeline.Artifact();
 
-    // 3. Pipeline: Define las etapas
+    // 3. Pipeline: Stages
     new codepipeline.Pipeline(this, 'Pipeline', {
       pipelineName: 'CDKPipeline',
       stages: [
