@@ -18,11 +18,11 @@ new PipelineStack(app, 'PipelineStack', {
   },
 });
 
-// References to the class LambdaStack
+// // References to the class LambdaStack
 
-new LambdaStack(app, 'LambdaStack', {
-  env: {
-    account: process.env.CDK_DEFAULT_ACCOUNT,
-    region: process.env.CDK_DEFAULT_REGION,
-  },
-});
+// new LambdaStack(app, 'LambdaStack', {
+//   env: {
+//     account: process.env.CDK_DEFAULT_ACCOUNT,
+//     region: process.env.CDK_DEFAULT_REGION,
+//   },
+// });

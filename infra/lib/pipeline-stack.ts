@@ -24,7 +24,7 @@ export class PipelineStack extends cdk.Stack {
             connectionArn: codestarConnection.attrConnectionArn, // ARN de la conexión CodeStar
           },
         ),
-        commands: ['../../buildspec.sh'],
+        commands: ['sh ../buildspec.sh'],
         primaryOutputDirectory: 'cdk.out', // Directorio de salida para la síntesis
       }),
     });
