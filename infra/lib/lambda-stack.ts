@@ -6,18 +6,17 @@ export class LambdaStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    // Definir una Lambda que usa el código en "lambdas/my-lambda"
     const myLambda = new lambda.Function(this, 'MyLambda', {
       runtime: lambda.Runtime.NODEJS_18_X,
       code: lambda.Code.fromAsset('../lambdas/my-lambda/dist'),
-      handler: 'index.handler', // Archivo y función principal de la Lambda
+      handler: 'index.handler',
     });
 
-    // Definir una Lambda que usa el código en "lambdas/my-lambda"
-    const myLambda2 = new lambda.Function(this, 'MyLambda', {
+    //TODO: how to name uniquely the lambda functions?
+    const myLambda2 = new lambda.Function(this, 'MyLambda2', {
       runtime: lambda.Runtime.NODEJS_18_X,
       code: lambda.Code.fromAsset('../lambdas/my-lambda/dist'),
-      handler: 'index.handler', // Archivo y función principal de la Lambda
+      handler: 'index.handler',
     });
   }
 }
