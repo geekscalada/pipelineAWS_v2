@@ -12,5 +12,12 @@ export class LambdaStack extends Stack {
       code: lambda.Code.fromAsset('../lambdas/my-lambda/dist'),
       handler: 'index.handler', // Archivo y función principal de la Lambda
     });
+
+    // Definir una Lambda que usa el código en "lambdas/my-lambda"
+    const myLambda2 = new lambda.Function(this, 'MyLambda', {
+      runtime: lambda.Runtime.NODEJS_18_X,
+      code: lambda.Code.fromAsset('../lambdas/my-lambda/dist'),
+      handler: 'index.handler', // Archivo y función principal de la Lambda
+    });
   }
 }
