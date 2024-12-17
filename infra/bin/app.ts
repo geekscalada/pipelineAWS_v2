@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib';
-import { PipelineStack } from '../lib/pipeline-stack';
+import { PipelineStack } from '../lib/pipeline-stack.js';
 
 /**
  * This is the entry point of the CDK application.
