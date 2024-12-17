@@ -4,6 +4,7 @@ import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
 import * as codepipeline_actions from 'aws-cdk-lib/aws-codepipeline-actions';
 import * as codebuild from 'aws-cdk-lib/aws-codebuild';
 import * as codestarconnections from 'aws-cdk-lib/aws-codestarconnections';
+import * as iam from 'aws-cdk-lib/aws-iam';
 
 export class PipelineStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -39,6 +40,10 @@ export class PipelineStack extends cdk.Stack {
         },
       },
     });
+
+    buildProject.role?.addManagedPolicy(
+      iam.ManagedPolicy.fromAwsManagedPolicyName('AdministratorAccess'),
+    );
 
     const buildOutput = new codepipeline.Artifact();
 
