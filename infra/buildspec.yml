@@ -20,7 +20,9 @@ phases:
       - cd ../../infra && npx tsc
       - ls -lah
       - echo "Building my-lambda..."
+      - ls -lah
       - cd ../lambdas/my-lambda && npx tsc
+      - ls -lah
       - echo "Synthesizing CDK..."
       - cd ../../infra && npx cdk synth
 artifacts:
