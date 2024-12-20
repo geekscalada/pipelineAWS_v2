@@ -1,40 +1,90 @@
 import * as cdk from 'aws-cdk-lib';
+import * as codepipeline from 'aws-cdk-lib/aws-codepipeline';
+import * as codepipeline_actions from 'aws-cdk-lib/aws-codepipeline-actions';
+import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
+import * as iam from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
-import { CodePipeline, CodePipelineSource, ShellStep } from 'aws-cdk-lib/pipelines';
-import * as codestarconnections from 'aws-cdk-lib/aws-codestarconnections';
 
 export class PipelineStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // 1. Crear la conexión CodeStar para GitHub
-    const codestarConnection = new codestarconnections.CfnConnection(this, 'GitHubConnection', {
-      connectionName: 'GitHubConnection', // Nombre de la conexión
-      providerType: 'GitHub', // Tipo de proveedor
+    // Define artifact bucket for pipeline
+    const artifactBucket = new cdk.aws_s3.Bucket(this, 'PipelineArtifactsBucket', {
+      versioned: true,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
     });
 
-    // 2. Definir la pipeline V2
-    const pipeline = new CodePipeline(this, 'CDKPipelineV2', {
-      pipelineName: 'CDKPipelineV2',
-      synth: new ShellStep('Synth', {
-        input: CodePipelineSource.connection(
-          'GEEKSCALADA/pipelineAWS_v2', // Repositorio en formato 'owner/repo'
-          'preproduction', // Rama del repositorio
-          {
-            connectionArn: codestarConnection.attrConnectionArn, // ARN de la conexión CodeStar
-          },
-        ),
-        commands: ['sh ../buildspec.sh'],
-        primaryOutputDirectory: 'cdk.out', // Directorio de salida para la síntesis
-      }),
+    // Define output artifact for Source stage
+    const sourceOutput = new codepipeline.Artifact();
+
+    // Retrieve GitHub OAuth token from Secrets Manager
+    const githubSecret = secretsmanager.Secret.fromSecretNameV2(
+      this,
+      'github-token',
+      'github-token',
+    );
+
+    // Define IAM Role for pipeline with large permissions
+    const pipelineRole = new iam.Role(this, 'PipelineRole', {
+      assumedBy: new iam.ServicePrincipal('codepipeline.amazonaws.com'),
     });
 
-    // 3. Opcional: Agregar permisos adicionales
-    // pipeline.addStage(
-    //   new cdk.Stage(this, 'DeployStage', {
-    //     stageName: 'Deploy',
-    //     // Agrega aquí aplicaciones adicionales si es necesario
-    //   }),
-    // );
+    pipelineRole.addManagedPolicy(
+      iam.ManagedPolicy.fromAwsManagedPolicyName('AdministratorAccess'),
+    );
+
+    // Define IAM Role for CodeBuild with large permissions
+    const buildRole = new iam.Role(this, 'CodeBuildServiceRole', {
+      assumedBy: new iam.ServicePrincipal('codebuild.amazonaws.com'),
+    });
+
+    buildRole.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AdministratorAccess'));
+
+    // Create the pipeline
+    const pipeline = new codepipeline.Pipeline(this, 'Pipeline', {
+      pipelineName: 'MyPipeline',
+      artifactBucket,
+      role: pipelineRole,
+    });
+
+    // Add Source stage
+    pipeline.addStage({
+      stageName: 'Source',
+      actions: [
+        new codepipeline_actions.GitHubSourceAction({
+          actionName: 'Checkout',
+          owner: 'GEEKSCALADA', // Replace with GitHub owner
+          repo: 'pipelineAWS_v2', // Replace with GitHub repo
+          branch: 'preproduction', // Replace with the branch to monitor
+          oauthToken: cdk.SecretValue.secretsManager(githubSecret.secretName, {
+            jsonField: 'github-token',
+          }),
+          output: sourceOutput,
+          trigger: codepipeline_actions.GitHubTrigger.WEBHOOK,
+        }),
+      ],
+    });
+
+    // Add Build stage
+    const buildOutput = new codepipeline.Artifact();
+    const buildProject = new cdk.aws_codebuild.PipelineProject(this, 'BuildProject', {
+      role: buildRole,
+    });
+
+    pipeline.addStage({
+      stageName: 'Build',
+      actions: [
+        new codepipeline_actions.CodeBuildAction({
+          actionName: 'Build',
+          input: sourceOutput,
+          outputs: [buildOutput],
+          project: buildProject,
+        }),
+      ],
+    });
+
+    // Additional stages like Deploy can be added similarly
   }
 }
