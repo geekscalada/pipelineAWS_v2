@@ -14,16 +14,16 @@ const app = new cdk.App();
 /**
  * Pipeline stacks
  */
-new PipelineStack(app, 'PipelineStack-Dev', {
-  env: {
-    account: process.env.DEV_ENV_ACCOUNT,
-    region: process.env.DEV_ENV_REGION,
-  },
-  githubOwner: process.env.DEV_ENV_GITHUB_OWNER as string,
-  githubRepo: process.env.DEV_ENV_GITHUB_REPO as string,
-  githubBranch: process.env.DEV_ENV_GITHUB_BRANCH as string,
-  environmentName: process.env.DEV_ENV_NAME as string,
-});
+// new PipelineStack(app, 'PipelineStack-Dev', {
+//   env: {
+//     account: process.env.DEV_ENV_ACCOUNT,
+//     region: process.env.DEV_ENV_REGION,
+//   },
+//   githubOwner: process.env.DEV_ENV_GITHUB_OWNER as string,
+//   githubRepo: process.env.DEV_ENV_GITHUB_REPO as string,
+//   githubBranch: process.env.DEV_ENV_GITHUB_BRANCH as string,
+//   environmentName: process.env.DEV_ENV_NAME as string,
+// });
 
 new PipelineStack(app, 'PipelineStack-Pre', {
   env: {

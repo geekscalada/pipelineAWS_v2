@@ -80,13 +80,12 @@ export class PipelineStack extends cdk.Stack {
 
     /**
      * Add Build stage
-     * @buildspec is the file that contains the commands to build the project
+     * This stage will build the application using CodeBuild and the buildspec.yml file
      */
 
     const buildOutput = new codepipeline.Artifact();
     const buildProject = new cdk.aws_codebuild.PipelineProject(this, 'BuildProject', {
       role: buildRole,
-      // buildSpec: cdk.aws_codebuild.BuildSpec.fromSourceFilename('./buildspec.yml'),
     });
 
     pipeline.addStage({
