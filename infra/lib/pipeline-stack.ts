@@ -5,12 +5,26 @@ import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 
+export interface PipelineStackProps extends cdk.StackProps {
+  githubOwner: string;
+  githubRepo: string;
+  githubBranch: string;
+  environmentName: string; // Nuevo campo para el nombre del entorno
+}
+
 export class PipelineStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props: PipelineStackProps) {
     super(scope, id, props);
+
+    const { githubOwner, githubRepo, githubBranch, environmentName } = props;
+
+    // Generar nombres dinámicos basados en el entorno
+    const pipelineName = `${environmentName}-${process.env.PROJECT_NAME}-pipeline`;
+    const artifactBucketName = `${environmentName}-${process.env.PROJECT_NAME}-artifact`;
 
     // Define artifact bucket for pipeline
     const artifactBucket = new cdk.aws_s3.Bucket(this, 'PipelineArtifactsBucket', {
+      bucketName: artifactBucketName,
       versioned: true,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
@@ -19,14 +33,12 @@ export class PipelineStack extends cdk.Stack {
     // Define output artifact for Source stage
     const sourceOutput = new codepipeline.Artifact();
 
-    // Retrieve GitHub OAuth token from Secrets Manager
     const githubSecret = secretsmanager.Secret.fromSecretNameV2(
       this,
-      'github-token',
+      'GitHubToken',
       'github-token',
     );
 
-    // Define IAM Role for pipeline with large permissions
     const pipelineRole = new iam.Role(this, 'PipelineRole', {
       assumedBy: new iam.ServicePrincipal('codepipeline.amazonaws.com'),
     });
@@ -35,7 +47,6 @@ export class PipelineStack extends cdk.Stack {
       iam.ManagedPolicy.fromAwsManagedPolicyName('AdministratorAccess'),
     );
 
-    // Define IAM Role for CodeBuild with large permissions
     const buildRole = new iam.Role(this, 'CodeBuildServiceRole', {
       assumedBy: new iam.ServicePrincipal('codebuild.amazonaws.com'),
     });
@@ -44,7 +55,7 @@ export class PipelineStack extends cdk.Stack {
 
     // Create the pipeline
     const pipeline = new codepipeline.Pipeline(this, 'Pipeline', {
-      pipelineName: 'MyPipeline',
+      pipelineName,
       artifactBucket,
       role: pipelineRole,
     });
@@ -54,10 +65,10 @@ export class PipelineStack extends cdk.Stack {
       stageName: 'Source',
       actions: [
         new codepipeline_actions.GitHubSourceAction({
-          actionName: 'Checkout',
-          owner: 'GEEKSCALADA', // Replace with GitHub owner
-          repo: 'pipelineAWS_v2', // Replace with GitHub repo
-          branch: 'preproduction', // Replace with the branch to monitor
+          actionName: `Checkout-${environmentName}`,
+          owner: githubOwner,
+          repo: githubRepo,
+          branch: githubBranch,
           oauthToken: cdk.SecretValue.secretsManager(githubSecret.secretName, {
             jsonField: 'github-token',
           }),
@@ -67,24 +78,27 @@ export class PipelineStack extends cdk.Stack {
       ],
     });
 
-    // Add Build stage
+    /**
+     * Add Build stage
+     * @buildspec is the file that contains the commands to build the project
+     */
+
     const buildOutput = new codepipeline.Artifact();
     const buildProject = new cdk.aws_codebuild.PipelineProject(this, 'BuildProject', {
       role: buildRole,
+      buildSpec: cdk.aws_codebuild.BuildSpec.fromSourceFilename('/infra/buildspec.yml'),
     });
 
     pipeline.addStage({
       stageName: 'Build',
       actions: [
         new codepipeline_actions.CodeBuildAction({
-          actionName: 'Build',
+          actionName: `Build-${environmentName}`,
           input: sourceOutput,
           outputs: [buildOutput],
           project: buildProject,
         }),
       ],
     });
-
-    // Additional stages like Deploy can be added similarly
   }
 }
