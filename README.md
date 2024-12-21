@@ -1,8 +1,48 @@
 # Getting started
 
-You need to make your first build outside the pipeline.
+## We need...
 
-## Using the pipeline
+//TODO: REVISAR ESTA PARTE DE PERMISOS
+
+- A gitHub repository and a PAT token with the following permissions:
+  - repo
+  - admin:repo_hook
+  - workflow
+  - An AWS account and configure a profile using the AWS CLI.
+  - aws configure --profile <profile-name>
+
+## First steps
+
+### Launch the cdk for deploy the pipeline first time
+
+- cd infra
+- npm i
+- npm run build TODO: environments variables
+- cdk deploy --profile <profile-name>
+
+### Validate connection to github
+
+- Go to your account at AWS
+- Go to CodePipeline and select your new pipeline
+- Go to edit/source/edit source
+- Click to connect to github and connect to your repository
+- Select the repo and branch you want to use
+- OK and save
+- Accept the webhook creation
+- Go to your repository and check the webhook created
+- Go to AWS CodePipeline and click to release the pipeline
+
+## Using the automatic pipeline
+
+- Push a new commit to the repository in the branch you selected to poll the changes
+- For this, you can uncomment the different constructs in the app to see the changes in your
+  infrastructure
+
+## Destroy your infrastructure
+
+- cdk destroy --profile <profile-name>
+
+TODO: REVISAR
 
 Comportamiento en una Pipeline con buildspec.yml Roles IAM Asignados a la Pipeline:
 
