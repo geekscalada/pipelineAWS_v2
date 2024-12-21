@@ -9,18 +9,19 @@ export interface PipelineStackProps extends cdk.StackProps {
   githubOwner: string;
   githubRepo: string;
   githubBranch: string;
-  environmentName: string; // Nuevo campo para el nombre del entorno
+  environmentName: string;
+  projectName: string;
 }
 
 export class PipelineStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: PipelineStackProps) {
     super(scope, id, props);
 
-    const { githubOwner, githubRepo, githubBranch, environmentName } = props;
+    const { githubOwner, githubRepo, githubBranch, environmentName, projectName } = props;
 
     // Generar nombres dinámicos basados en el entorno
-    const pipelineName = `${environmentName}-${process.env.PROJECT_NAME}-pipeline`;
-    const artifactBucketName = `${environmentName}-${process.env.PROJECT_NAME}-artifact`;
+    const pipelineName = `${environmentName}-${projectName}-pipeline`;
+    const artifactBucketName = `${environmentName}-${projectName}-artifact`;
 
     // Define artifact bucket for pipeline
     const artifactBucket = new cdk.aws_s3.Bucket(this, 'PipelineArtifactsBucket', {

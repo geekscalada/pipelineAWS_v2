@@ -17,8 +17,8 @@
 
 - cd infra
 - npm i
-- npm run build TODO: environments variables
-- cdk deploy --profile <profile-name>
+- npm run build TODO: environments variables NOOOOT, just secret-stack
+- npx cdk deploy --context env=pre --all --profile <profile-name>
 
 ### Validate connection to github
 
