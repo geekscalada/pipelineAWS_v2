@@ -7,17 +7,6 @@ export class LambdaStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
-    /**
-     * @lambdaName: When you are passing it to the constructor, it is really an ID, and when you are passing use it as a property, it is a name.
-     */
-    const lambdaName = 'jep_HelloWorld_lambda';
-    const myLambda = new lambda.Function(this, lambdaName, {
-      functionName: lambdaName,
-      runtime: lambda.Runtime.NODEJS_18_X,
-      code: lambda.Code.fromAsset('../lambdas/my-lambda/dist'),
-      handler: 'index.handler',
-    });
-
     // Obtén el secreto desde AWS Secrets Manager
     const secret = secretsmanager.Secret.fromSecretNameV2(
       this,
@@ -25,17 +14,34 @@ export class LambdaStack extends Stack {
       'secret-pipeline', // Nombre del secreto en AWS Secrets Manager
     );
 
-    // Conforma el nombre dinámico de la Lambda
-    const lambdaName2 = `jep_${secret
-      .secretValueFromJson('projectName')
-      .unsafeUnwrap()}_HelloWorld_lambda`;
+    // Nombre estático base para evitar errores de síntesis
+    const lambdaBaseName = 'jep_HelloWorld_lambda';
 
-    // Define la Lambda
-    const myLambda2 = new lambda.Function(this, lambdaName2, {
-      functionName: lambdaName2,
+    // Define Lambda 1
+    const myLambda = new lambda.Function(this, `${lambdaBaseName}_Static`, {
+      functionName: `${lambdaBaseName}_Static`, // Nombre estático
       runtime: lambda.Runtime.NODEJS_18_X,
       code: lambda.Code.fromAsset('../lambdas/my-lambda/dist'),
       handler: 'index.handler',
     });
+
+    // Define Lambda 2 con un nombre dinámico derivado del entorno (como variable de entorno)
+    const myLambda2 = new lambda.Function(this, `${lambdaBaseName}_Dynamic`, {
+      functionName: `${lambdaBaseName}_Dynamic`, // Usamos un identificador único pero manejable
+      runtime: lambda.Runtime.NODEJS_18_X,
+      code: lambda.Code.fromAsset('../lambdas/my-lambda/dist'),
+      handler: 'index.handler',
+      environment: {
+        ENVIRONMENT_NAME: secret.secretValueFromJson('environmentName').unsafeUnwrap(),
+        PROJECT_NAME: secret.secretValueFromJson('projectName').unsafeUnwrap(),
+      },
+    });
+
+    // Etiquetas adicionales para identificación
+    myLambda2.node.addMetadata(
+      'environment',
+      secret.secretValueFromJson('environmentName').toString(),
+    );
+    myLambda2.node.addMetadata('project', secret.secretValueFromJson('projectName').toString());
   }
 }
