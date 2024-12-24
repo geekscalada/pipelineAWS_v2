@@ -1,56 +1,68 @@
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib';
+import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { PipelineStack } from '../lib/pipeline-stack.js';
 import { LambdaStack } from '../lib/lambda-stack.js';
+import { App, Stack, StackProps } from 'aws-cdk-lib';
+import { SecretValueEntryFilterSensitiveLog } from '@aws-sdk/client-secrets-manager';
 
-/**
- * This is the entry point of the CDK application.
- */
-const app = new cdk.App();
-
-/**
- * Variables to define which environment to deploy
- */
-const environment = app.node.tryGetContext('env');
-
-if (!environment) {
-  throw new Error('No se especificó un entorno. Usa --context env=<env_name> para definirlo.');
+interface EnvironmentProps extends StackProps {
+  gitHubToken: string;
+  account: string;
+  region: string;
+  githubRepo: string;
+  githubOwner: string;
+  githubBranch: string;
+  projectName: string;
+  environmentName: string;
 }
 
-const environmentContext = app.node.tryGetContext(environment);
+class SecretPipelineStack extends Stack {
+  constructor(scope: App, id: string, props: EnvironmentProps) {
+    super(scope, id, props);
 
-if (!environmentContext) {
-  throw new Error(`No se encontró el contexto para el entorno: ${environment}`);
+    // Crear el secreto en AWS Secrets Manager
+    new Secret(this, `SecretPipeline`, {
+      secretName: `secret-pipeline`,
+      secretObjectValue: {
+        gitHubToken: cdk.SecretValue.unsafePlainText(props.gitHubToken),
+        account: cdk.SecretValue.unsafePlainText(props.account),
+        region: cdk.SecretValue.unsafePlainText(props.region),
+        githubRepo: cdk.SecretValue.unsafePlainText(props.githubRepo),
+        githubOwner: cdk.SecretValue.unsafePlainText(props.githubOwner),
+        githubBranch: cdk.SecretValue.unsafePlainText(props.githubBranch),
+        projectName: cdk.SecretValue.unsafePlainText(props.projectName),
+        environmentName: cdk.SecretValue.unsafePlainText(props.environmentName),
+      },
+    });
+  }
 }
 
-const { account, region, githubOwner, githubRepo, githubBranch, environmentName, projectName } =
-  environmentContext;
+const app = new App();
 
-if (!account || !region || !githubOwner || !githubRepo || !githubBranch || !environmentName) {
-  throw new Error(`Faltan valores en el contexto para el entorno: ${environment}`);
+// Obtener el entorno desde la línea de comandos
+const environmentContext = app.node.tryGetContext('env');
+
+if (environmentContext) {
+  console.log('Using context from the command line to set the secret in the account');
+
+  // Obtener los valores del contexto para el entorno especificado
+  const secretValues: EnvironmentProps = app.node.tryGetContext(environmentContext);
+
+  if (!secretValues) {
+    throw new Error(`No se encontraron valores de contexto para el entorno: ${environmentContext}`);
+  }
+
+  new SecretPipelineStack(app, `SecretPipelineStack`, secretValues);
+
+  new PipelineStack(app, `PipelineStack`, {
+    environmentName: secretValues.environmentName,
+    projectName: secretValues.projectName,
+    githubOwner: secretValues.githubOwner,
+    githubRepo: secretValues.githubRepo,
+    githubBranch: secretValues.githubBranch,
+  });
 }
 
-/**
- * Pipeline stacks for different environments
- */
-
-new PipelineStack(app, `PipelineStack-${environmentName}`, {
-  env: {
-    account,
-    region,
-  },
-  githubOwner,
-  githubRepo,
-  githubBranch,
-  environmentName,
-  projectName,
-});
-
-// References to the class LambdaStack
-// TODO: generate custom names!
-new LambdaStack(app, `LambdaStack-${environmentName}`, {
-  env: {
-    account,
-    region,
-  },
-});
+// Optionally deploy other stacks (e.g., LambdaStack)
+new LambdaStack(app, `LambdaStack-prueba`);
