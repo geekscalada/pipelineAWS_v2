@@ -1,4 +1,3 @@
-
 version: '0.2'
 
 phases:
@@ -26,12 +25,9 @@ phases:
       - ls -lah
       - echo "Synthesizing CDK..."
       - cd ../../infra
-      build:
-  commands:
-      - npx cdk synth --app infra --context env=pre
-      - npx cdk deploy --app infra --all --context env=pre --require-approval never
+      - npx cdk synth --context env=pre --verbose
+      - npx cdk deploy --all --context env=pre --require-approval never
 artifacts:
   files:
     - '**/*'
   base-directory: infra/dist
-
