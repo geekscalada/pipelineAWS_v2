@@ -13,6 +13,29 @@ export interface PipelineStackProps extends cdk.StackProps {
   projectName: string;
 }
 
+//TODO: GENERAR UN SECRET PARA EL TOKEN DE GITHUB
+
+// class SecretPipelineStack extends Stack {
+//   constructor(scope: App, id: string, props: EnvironmentProps) {
+//     super(scope, id, props);
+
+//     // Crear el secreto en AWS Secrets Manager
+//     new Secret(this, `SecretPipeline`, {
+//       secretName: `secret-pipeline`,
+//       secretObjectValue: {
+//         gitHubToken: cdk.SecretValue.unsafePlainText(props.gitHubToken),
+//         account: cdk.SecretValue.unsafePlainText(props.account),
+//         region: cdk.SecretValue.unsafePlainText(props.region),
+//         githubRepo: cdk.SecretValue.unsafePlainText(props.githubRepo),
+//         githubOwner: cdk.SecretValue.unsafePlainText(props.githubOwner),
+//         githubBranch: cdk.SecretValue.unsafePlainText(props.githubBranch),
+//         projectName: cdk.SecretValue.unsafePlainText(props.projectName),
+//         environmentName: cdk.SecretValue.unsafePlainText(props.environmentName),
+//       },
+//     });
+//   }
+// }
+
 export class PipelineStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: PipelineStackProps) {
     super(scope, id, props);
