@@ -31,46 +31,6 @@ if (environmentContext) {
     throw new Error(`No se encontraron valores de contexto para el entorno: ${environmentContext}`);
   }
 
-  //   console.log(`Secrets for environment: ${JSON.stringify(secretValues)}`);
-
-  //   const buildspecContent = `
-  // version: '0.2'
-
-  // phases:
-  //   install:
-  //     runtime-versions:
-  //       nodejs: '18'
-  //     commands:
-  //       # - echo "Updating npm to the latest version..."
-  //       # - npm install -g npm@latest
-  //       - echo "Installing dependencies..."
-  //       - cd infra && npm install --include=dev
-  //       - npm install -g typescript
-  //       - echo "Verifying TypeScript installation..."
-  //       - tsc --version
-  //       - pwd
-  //       - cd ../lambdas/my-lambda && npm install --include=dev
-  //   build:
-  //     commands:
-  //       - echo "Building infrastructure..."
-  //       - cd ../../infra && npx tsc
-  //       - ls -lah
-  //       - echo "Building my-lambda..."
-  //       - ls -lah
-  //       - cd ../lambdas/my-lambda && npx tsc
-  //       - ls -lah
-  //       - echo "Synthesizing CDK..."
-  //       - cd ../../infra
-  //       - ${secretValues.buildSpecsSynthCommand}
-  //       - ${secretValues.buildSpecsDeployCommand}
-  // artifacts:
-  //   files:
-  //     - '**/*'
-  //   base-directory: infra/dist
-
-  // `;
-  //   fs.writeFileSync('./buildspec.generated.yml', buildspecContent);
-
   new SecretPipelineStack(app, `SecretPipelineStack`);
 
   new PipelineStack(app, `PipelineStack`, {

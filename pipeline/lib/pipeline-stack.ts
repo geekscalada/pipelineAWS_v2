@@ -4,6 +4,8 @@ import * as codepipeline_actions from 'aws-cdk-lib/aws-codepipeline-actions';
 import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 export interface PipelineStackProps extends cdk.StackProps {
   githubOwner: string;
@@ -19,6 +21,8 @@ export class SecretPipelineStack extends cdk.Stack {
   constructor(scope: Construct, id: string) {
     super(scope, id);
 
+    //import dotenv from 'dotenv';
+
     const gitHubToken = process.env.GITHUB_TOKEN;
 
     if (!gitHubToken) {
@@ -27,7 +31,7 @@ export class SecretPipelineStack extends cdk.Stack {
 
     // Crear el secreto en AWS Secrets Manager
     new secretsmanager.Secret(this, `SecretPipeline`, {
-      secretName: `secret-pipeline`,
+      secretName: `Secret-pipeline`,
       secretObjectValue: {
         gitHubToken2: cdk.SecretValue.unsafePlainText(gitHubToken),
       },
@@ -58,8 +62,8 @@ export class PipelineStack extends cdk.Stack {
 
     const githubSecret = secretsmanager.Secret.fromSecretNameV2(
       this,
-      'GitHubToken',
-      'github-token',
+      'Secret-pipeline',
+      'gitHubToken2',
     );
 
     const pipelineRole = new iam.Role(this, 'PipelineRole', {
@@ -93,7 +97,7 @@ export class PipelineStack extends cdk.Stack {
           repo: githubRepo,
           branch: githubBranch,
           oauthToken: cdk.SecretValue.secretsManager(githubSecret.secretName, {
-            jsonField: 'github-token',
+            jsonField: 'gitHubToken2',
           }),
           output: sourceOutput,
           trigger: codepipeline_actions.GitHubTrigger.WEBHOOK,
