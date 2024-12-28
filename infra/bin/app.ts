@@ -19,7 +19,7 @@ const app = new App();
 // Obtener el entorno desde la línea de comandos
 const environmentContext = app.node.tryGetContext('env');
 
-if (environmentContext) {
+if (!environmentContext) {
   throw new Error(`Could not get the context from the command line`);
 }
 // Obtener los valores del contexto para el entorno especificado
