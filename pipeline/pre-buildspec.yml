@@ -7,6 +7,8 @@ phases:
     commands:
       # - echo "Updating npm to the latest version..."
       # - npm install -g npm@latest
+      - pwd
+      - ls -lah
       - echo "Installing dependencies..."
       - cd infra && npm install --include=dev
       - npm install -g typescript

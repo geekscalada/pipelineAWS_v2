@@ -29,7 +29,7 @@
 - Select the repo and branch you want to use
 - OK and save
 - Accept the webhook creation
-- Go to your repository and check the webhook created
+- Go to your gitHUB repository and check the webhook created
 - Go to AWS CodePipeline and click to release the pipeline
 
 ## Using the automatic pipeline

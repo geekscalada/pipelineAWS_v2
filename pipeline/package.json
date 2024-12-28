@@ -1,0 +1,27 @@
+{
+  "name": "infra",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "synth": "cdk synth",
+    "deploy": "npm run deploy:env --",
+    "deploy:env": "env=$npm_config_env && cdk deploy --all --context env=${env}",
+    "destroy": "npm run destroy:env --",
+    "destroy:env": "env=$npm_config_env && cdk destroy --all --context env=${env}"
+  },
+  "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.716.0",
+    "aws-cdk-lib": "^2.173.2",
+    "constructs": "^10.4.2",
+    "dotenv": "^16.4.7",
+    "fs": "^0.0.1-security"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.10",
+    "aws-cdk": "^2.172.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  }
+}

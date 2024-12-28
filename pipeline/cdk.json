@@ -1,0 +1,36 @@
+{
+  "app": "npx ts-node --esm bin/app.ts",
+  "context": {
+    "dev": {
+      "account": "111111111111",
+      "region": "us-west-1",
+      "githubRepo": "pipelineAWS_v2",
+      "githubOwner": "GEEKSCALADA",
+      "githubBranch": "develop",
+      "projectName": "example-geekscalada-pipeline",
+      "environmentName": "dev",
+      "buildSpecsSynthCommand": "npx cdk synth --context env=dev",
+      "buildSpecsDeployCommand": "npx cdk deploy --all --context env=dev --require-approval never"
+    },
+    "pre": {
+      "githubRepo": "pipelineAWS_v2",
+      "githubOwner": "GEEKSCALADA",
+      "githubBranch": "preproduction",
+      "projectName": "example-geekscalada-pipeline",
+      "environmentName": "pre",
+      "buildSpecsSynthCommand": "npx cdk synth --context env=pre",
+      "buildSpecsDeployCommand": "npx cdk deploy --all --context env=pre --require-approval never"
+    },
+    "prod": {
+      "account": "333333333333",
+      "region": "us-east-1",
+      "githubRepo": "pipelineAWS_v2",
+      "githubOwner": "GEEKSCALADA",
+      "githubBranch": "main",
+      "projectName": "example-geekscalada-pipeline",
+      "environmentName": "prod",
+      "buildSpecsSynthCommand": "npx cdk synth --context env=prod",
+      "buildSpecsDeployCommand": "npx cdk deploy --all --context env=prod --require-approval never"
+    }
+  }
+}
