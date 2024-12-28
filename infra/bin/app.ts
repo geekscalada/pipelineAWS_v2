@@ -30,4 +30,4 @@ if (!secretValues) {
 }
 
 // Stacks
-new LambdaStack(app, `LambdaStack-prueba`, secretValues);
+// new LambdaStack(app, `LambdaStack-prueba`, secretValues);
