@@ -6,10 +6,8 @@
     "build": "tsc",
     "watch": "tsc -w",
     "synth": "cdk synth",
-    "deploy": "npm run deploy:env --",
-    "deploy:env": "env=$npm_config_env && cdk deploy --all --context env=${env}",
-    "destroy": "npm run destroy:env --",
-    "destroy:env": "env=$npm_config_env && cdk destroy --all --context env=${env}"
+    "deploy-pre": "cdk deploy --all --profile <yourProfile> --context env=pre",
+    "destroy:pre": "cdk destroy --all --profile <yourProfile> --context env=pre"
   },
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.716.0",

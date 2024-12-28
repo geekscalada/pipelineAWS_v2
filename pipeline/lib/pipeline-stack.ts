@@ -33,7 +33,7 @@ export class SecretPipelineStack extends cdk.Stack {
     new secretsmanager.Secret(this, `SecretPipeline`, {
       secretName: `Secret-pipeline`,
       secretObjectValue: {
-        gitHubToken2: cdk.SecretValue.unsafePlainText(gitHubToken),
+        gitHubToken: cdk.SecretValue.unsafePlainText(gitHubToken),
       },
     });
   }
@@ -62,8 +62,8 @@ export class PipelineStack extends cdk.Stack {
 
     const githubSecret = secretsmanager.Secret.fromSecretNameV2(
       this,
+      'SecretPipeline',
       'Secret-pipeline',
-      'gitHubToken2',
     );
 
     const pipelineRole = new iam.Role(this, 'PipelineRole', {
@@ -97,7 +97,7 @@ export class PipelineStack extends cdk.Stack {
           repo: githubRepo,
           branch: githubBranch,
           oauthToken: cdk.SecretValue.secretsManager(githubSecret.secretName, {
-            jsonField: 'gitHubToken2',
+            jsonField: 'gitHubToken',
           }),
           output: sourceOutput,
           trigger: codepipeline_actions.GitHubTrigger.WEBHOOK,
