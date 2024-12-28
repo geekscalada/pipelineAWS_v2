@@ -26,8 +26,10 @@ phases:
       - ls -lah
       - echo "Synthesizing CDK..."
       - cd ../../infra
-      - npx cdk synth --context env=pre
-      - npx cdk deploy --all --context env=pre --require-approval never
+      build:
+  commands:
+      - npx cdk synth --app infra --context env=pre
+      - npx cdk deploy --app infra --all --context env=pre --require-approval never
 artifacts:
   files:
     - '**/*'
