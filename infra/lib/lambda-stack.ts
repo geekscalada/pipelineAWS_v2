@@ -30,7 +30,7 @@ export class LambdaStack extends Stack {
       {
         functionName: `${projectName}-${environmentName}-${newLambdaBaseName}`, // Nombre estático
         runtime: lambda.Runtime.NODEJS_18_X,
-        code: lambda.Code.fromAsset('../lambdas/new-lambda/dist'),
+        code: lambda.Code.fromAsset('../lambdas/my-lambda/dist'),
         handler: 'index.handler',
       },
     );
