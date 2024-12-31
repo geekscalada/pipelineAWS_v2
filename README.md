@@ -1,6 +1,88 @@
+# What is this?
+
+A repo to easy deploy a pipeline and more infraestructure using AWS CDK and IaC approach. You can
+with this repo deploy diffetent pipelines for different environments (for example, dev, integration,
+production) responding to changes in different branches for your gitHub repository.
+
 # Getting started
 
-## We need...
+### We need...
+
+- A gitHub account and clone this repo
+  - A PAT token with the following permissions:
+    - repo
+    - admin:repo_hook
+    - workflow
+- One or more AWS accounts
+  - Users with AdministratorAccess policy
+  - AWS CLI installed
+
+### Create a AWS user with AdministratorAccess policy
+
+- Go to your AWS account using the root user
+- Go to "My Security Credentials" and create an Access Key and a Secret Access Key
+- Execute `aws configure` and set your Access Key and Secret Access Key, a default region and a
+  default output format, for example `json`
+- In this point you should to have a profile in your `~/.aws/credentials` file
+- Check your profile with `aws sts get-caller-identity --profile <profile-name>`
+  - When you see :root in the ARN, you are using the root user
+  - When you see :user in the ARN, you are using an IAM user
+- We want to use an IAM user, so we need to create a new user with AdministratorAccess policy
+- Use the command `aws iam create-user --user-name newUser`
+- It's a good practice to create a group and assign the AdministratorAccess policy to the group
+- Use the command `aws iam create-group --group-name administrators`
+- Then assign the policy to the group with
+  `aws iam attach-group-policy --group-name administrators --policy-arn arn:aws:iam::aws:policy/AdministratorAccess`
+- Finally, add the user to the group with
+  `aws iam add-user-to-group --user-name newUser --group-name`
+- Now we need credentials for this user, use: `aws iam create-access-key --user-name newUser`
+- Keep this credentials in a safe place, we need them later to create a new profile
+- Generate a password for this user to use AWS web console
+  `aws iam create-login-profile --user-name newUser --password securePass --password-reset-required`
+  - Your can get the URL to login with this user navigating in your AWS account on the user profile
+    and usually is something like `https://<account_ID>.signin.aws.amazon.com/console`
+- Now we need to create a new profile in our `~/.aws/credentials` file using again
+  `aws configure --profile newUser`
+- Keep in mind that this repo is thought to be used with multiple profiles and each profile could be
+  a different environment.
+
+### Create your PAT token in gitHub
+
+- Go to your gitHub account
+- Create a PAT token with the following permissions:
+  - repo
+  - admin:repo_hook
+  - workflow
+- Use this guideline
+  https://docs.github.com/es/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens
+  to create your token, remember use classic version
+- Copy this token and rename the file envExample to .env and paste the token in the GITHUB_TOKEN
+  variable
+  - Make sure to add this file to your .gitignore file
+
+### Configure your cdk.json files and buildspec.yml
+
+- Go to infa/cdk.json and pipeline/cdk.json and use your own names for your environments and project
+  name, and also the repo/branch you want to use to listen for changes in your pipeline
+- You can see different buildspec.yml files in the infra folder, each environment we will point to a
+  different file using the prefix of the environment. Each file has little changes to compose names
+  of the resources using the context variables in the cdk.json file, for example a "pro" pipeline
+  will use the pro buildspec.yml file and this buildspec file will use the "pro" context variable to
+  compose the name of the resources. It will do using the --context flag in the cdk synth and cdk
+  deploy commands. So, if you use different context variables in the cdk.json file, you will need to
+  create different buildspec files to use the context variables in the names of the resources.
+
+### Launch the cdk for deploy the pipeline first time for each environment and aws account
+
+- cd pipeline
+- npx cdk deploy --context env=<your-environment> --all --profile <your-pre-profile-of-AWS>
+
+  - For example `npx cdk deploy --context env=pre --all --profile <pre-profile-aws>` will deploy a
+    pipeline in the pre account aws using the pre context variables in the cdk.json file and it will
+    use the pre pre-buildspec.yml file to build the resources.
+
+    //TODO: CONTINUE
+    HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 //TODO: REVISAR ESTA PARTE DE PERMISOS
 

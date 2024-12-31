@@ -4,12 +4,6 @@ import { LambdaStack } from '../lib/lambda-stack.js';
 import { App, StackProps } from 'aws-cdk-lib';
 
 export interface EnvironmentProps extends StackProps {
-  gitHubToken: string;
-  account: string;
-  region: string;
-  githubRepo: string;
-  githubOwner: string;
-  githubBranch: string;
   projectName: string;
   environmentName: string;
 }

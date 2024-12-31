@@ -2,29 +2,14 @@
   "app": "node dist/bin/app.js",
   "context": {
     "dev": {
-      "account": "111111111111",
-      "region": "us-west-1",
-      "githubRepo": "pipelineAWS_v2",
-      "githubOwner": "GEEKSCALADA",
-      "githubBranch": "develop",
       "projectName": "example-geekscalada-pipeline",
       "environmentName": "dev"
     },
     "pre": {
-      "account": "650251707077",
-      "region": "us-west-2",
-      "githubRepo": "pipelineAWS_v2",
-      "githubOwner": "GEEKSCALADA",
-      "githubBranch": "preproduction",
       "projectName": "example-geekscalada-pipeline",
       "environmentName": "pre"
     },
     "prod": {
-      "account": "333333333333",
-      "region": "us-east-1",
-      "githubRepo": "pipelineAWS_v2",
-      "githubOwner": "GEEKSCALADA",
-      "githubBranch": "main",
       "projectName": "example-geekscalada-pipeline",
       "environmentName": "prod"
     }

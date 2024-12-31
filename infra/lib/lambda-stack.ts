@@ -8,28 +8,19 @@ export class LambdaStack extends Stack {
   constructor(scope: Construct, id: string, props: EnvironmentProps) {
     super(scope, id, props);
 
-    const {
-      gitHubToken,
-      account,
-      region,
-      githubRepo,
-      githubOwner,
-      githubBranch,
-      projectName,
-      environmentName,
-    } = props;
+    const { projectName, environmentName } = props;
 
     const lambdaBaseName = 'jep_HelloWorld_lambda';
 
-    // const myLambda = new lambda.Function(
-    //   this,
-    //   `${projectName}-${environmentName}-${lambdaBaseName}`,
-    //   {
-    //     functionName: `${projectName}-${environmentName}-${lambdaBaseName}`, // Nombre estático
-    //     runtime: lambda.Runtime.NODEJS_18_X,
-    //     code: lambda.Code.fromAsset('../lambdas/my-lambda/dist'),
-    //     handler: 'index.handler',
-    //   },
-    // );
+    const myLambda = new lambda.Function(
+      this,
+      `${projectName}-${environmentName}-${lambdaBaseName}`,
+      {
+        functionName: `${projectName}-${environmentName}-${lambdaBaseName}`, // Nombre estático
+        runtime: lambda.Runtime.NODEJS_18_X,
+        code: lambda.Code.fromAsset('../lambdas/my-lambda/dist'),
+        handler: 'index.handler',
+      },
+    );
   }
 }
