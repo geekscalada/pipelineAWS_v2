@@ -58,7 +58,7 @@ production) responding to changes in different branches for your gitHub reposito
   to create your token, remember use classic version
 - Copy this token and rename the file envExample to .env and paste the token in the GITHUB_TOKEN
   variable
-  - Make sure to add this file to your .gitignore file
+  - Make sure to add this file to your .gitignore and remove it when your pipeline is created
 
 ### Configure your cdk.json files and buildspec.yml
 
@@ -67,7 +67,7 @@ production) responding to changes in different branches for your gitHub reposito
 - You can see different buildspec.yml files in the infra folder, each environment we will point to a
   different file using the prefix of the environment. Each file has little changes to compose names
   of the resources using the context variables in the cdk.json file, for example a "pro" pipeline
-  will use the pro buildspec.yml file and this buildspec file will use the "pro" context variable to
+  will use the pro-buildspec.yml file and this buildspec file will use the "pro" context variable to
   compose the name of the resources. It will do using the --context flag in the cdk synth and cdk
   deploy commands. So, if you use different context variables in the cdk.json file, you will need to
   create different buildspec files to use the context variables in the names of the resources.
