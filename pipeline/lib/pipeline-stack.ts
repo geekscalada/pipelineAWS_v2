@@ -21,8 +21,6 @@ export class SecretPipelineStack extends cdk.Stack {
   constructor(scope: Construct, id: string) {
     super(scope, id);
 
-    //import dotenv from 'dotenv';
-
     const gitHubToken = process.env.GITHUB_TOKEN;
 
     if (!gitHubToken) {
