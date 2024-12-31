@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 import { PipelineStack, SecretPipelineStack } from '../lib/pipeline-stack.js';
 import { App, StackProps } from 'aws-cdk-lib';
-import * as fs from 'fs';
 
 interface EnvironmentProps extends StackProps {
   gitHubToken: string;

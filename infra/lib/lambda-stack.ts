@@ -19,19 +19,17 @@ export class LambdaStack extends Stack {
       environmentName,
     } = props;
 
-    // Nombre estático base para evitar errores de síntesis
     const lambdaBaseName = 'jep_HelloWorld_lambda';
 
-    // Define Lambda 1
-    const myLambda = new lambda.Function(
-      this,
-      `${projectName}-${environmentName}-${lambdaBaseName}`,
-      {
-        functionName: `${projectName}-${environmentName}-${lambdaBaseName}`, // Nombre estático
-        runtime: lambda.Runtime.NODEJS_18_X,
-        code: lambda.Code.fromAsset('../lambdas/my-lambda/dist'),
-        handler: 'index.handler',
-      },
-    );
+    // const myLambda = new lambda.Function(
+    //   this,
+    //   `${projectName}-${environmentName}-${lambdaBaseName}`,
+    //   {
+    //     functionName: `${projectName}-${environmentName}-${lambdaBaseName}`, // Nombre estático
+    //     runtime: lambda.Runtime.NODEJS_18_X,
+    //     code: lambda.Code.fromAsset('../lambdas/my-lambda/dist'),
+    //     handler: 'index.handler',
+    //   },
+    // );
   }
 }
