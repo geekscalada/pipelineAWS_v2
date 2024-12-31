@@ -26,7 +26,7 @@ export class LambdaStack extends Stack {
 
     const newLambda = new lambda.Function(
       this,
-      `${projectName}-${environmentName}-${lambdaBaseName}`,
+      `${projectName}-${environmentName}-${newLambdaBaseName}`,
       {
         functionName: `${projectName}-${environmentName}-${newLambdaBaseName}`, // Nombre estático
         runtime: lambda.Runtime.NODEJS_18_X,
